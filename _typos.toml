@@ -1,0 +1,8 @@
+# typos allowlist — sched-ext scheduler names and project terms, not misspellings.
+[default.extend-words]
+scx = "scx"
+lavd = "lavd"
+bpfland = "bpfland"
+rustland = "rustland"
+flatcg = "flatcg"
+rlfifo = "rlfifo"
