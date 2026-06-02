@@ -17,5 +17,18 @@
     "binary": null,
     "args": null,
     "check": "elf"
-  }
+  },
+  "description": "sched-ext (scx) schedulers built from git main, packaged for NixOS",
+  "topics": [
+    "bleeding-edge",
+    "flake",
+    "kernel",
+    "nix",
+    "nixos",
+    "nixos-module",
+    "rust",
+    "sched-ext",
+    "scheduler",
+    "scx"
+  ]
 }
