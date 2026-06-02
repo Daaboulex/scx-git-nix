@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 <!-- END generated:badges -->
 
-Bleeding-edge [sched-ext](https://github.com/sched-ext/scx) schedulers built from the tip of `main`, packaged for NixOS — the sched_ext analogue of [mesa-git-nix](https://github.com/Daaboulex/mesa-git-nix). Always the latest `scx_lavd`, `scx_rusty`, `scx_layered`, `scx_flash`, `scx_bpfland` and friends.
+Bleeding-edge [sched-ext](https://github.com/sched-ext/scx) schedulers built from the tip of `main` and packaged for NixOS. Always the latest `scx_lavd`, `scx_rusty`, `scx_layered`, `scx_flash`, `scx_bpfland` and friends.
 
 <!-- BEGIN generated:upstream -->
 ## Upstream
