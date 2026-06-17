@@ -18,8 +18,6 @@
   outputs =
     inputs@{ flake-parts, self, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      # The scx Rust schedulers bundle x86-only asm; nixpkgs marks aarch64 bad.
-      # declared == built.
       systems = [
         "x86_64-linux"
         "aarch64-linux"

@@ -33,7 +33,7 @@ A Nix flake that packages the **Rust userspace schedulers** from `sched-ext/scx`
 ## Requirements
 
 - A Linux kernel **6.12 or newer** with `sched_ext` enabled (e.g. recent CachyOS, or `boot.kernelPackages = pkgs.linuxPackages_latest`). The package builds on any kernel; the schedulers only *run* on a sched_ext kernel.
-- `x86_64-linux` (the Rust schedulers bundle x86-only asm).
+- `x86_64-linux` and `aarch64-linux` (built from source; upstream scx is architecture-portable).
 
 <!-- BEGIN generated:installation -->
 ## Installation
