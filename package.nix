@@ -116,7 +116,5 @@ rustPlatform.buildRustPackage (finalAttrs: {
     changelog = "https://github.com/sched-ext/scx/commits/main";
     license = lib.licenses.gpl2Only;
     platforms = lib.platforms.linux;
-    # rustscheds bundle x86-only asm (nixpkgs marks aarch64 bad too).
-    badPlatforms = [ "aarch64-linux" ];
   };
 })
