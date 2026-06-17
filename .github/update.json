@@ -16,19 +16,19 @@
   "verify": {
     "binary": null,
     "args": null,
-    "check": "elf"
+    "check": "eval"
   },
-  "description": "sched-ext (scx) schedulers built from git main, packaged for NixOS",
+  "description": "sched-ext (scx) Rust schedulers built from git main, packaged for NixOS - overlay + NixOS module",
   "topics": [
-    "bleeding-edge",
-    "flake",
-    "kernel",
     "nix",
     "nixos",
+    "flake",
     "nixos-module",
-    "rust",
+    "scx",
     "sched-ext",
     "scheduler",
-    "scx"
+    "kernel",
+    "rust",
+    "bleeding-edge"
   ]
 }
