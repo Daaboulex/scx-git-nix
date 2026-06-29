@@ -9,22 +9,23 @@
   fetchFromGitHub,
   protobuf,
   libseccomp,
+  openssl,
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "scx-git";
   # Auto-updated by scripts/update.sh (versionScheme: unstable-date).
-  version = "1.1.1-unstable-2026-06-23";
+  version = "1.1.1-unstable-2026-06-29";
 
   src = fetchFromGitHub {
     owner = "sched-ext";
     repo = "scx";
-    rev = "2088c10c1c24eda0a733d5ab0892ca493a9b1df7";
-    hash = "sha256-KD+VBjQ4g3lRNGIhq9gh4Zi/Q3b1qDATiM4hupgo3TQ=";
+    rev = "e1059502b7b7c0fd791d091f89fcfea33e99f372";
+    hash = "sha256-3fxwYO7rWZQpzoloA++hBWtbm+8tUoVXTZyW5mYLaxU=";
   };
 
   # Regenerated on every bump by the updater (build-extract). The Cargo.lock
   # of git main moves, so this is not stable across revisions.
-  cargoHash = "sha256-WcNa92IVi/dQ5BKyltLs+psPi9dPSOAPsjRYkwomb50=";
+  cargoHash = "sha256-F1mtajo6BwjU2kLEwrQlXQ+Rtg3ZrX0OEhxK6yUyc48=";
 
   nativeBuildInputs = [
     pkg-config
@@ -37,6 +38,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     zlib
     zstd
     libseccomp
+    openssl # scx_forge_agent links openssl-sys via native-tls (reqwest)
   ];
 
   env = {
@@ -60,7 +62,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   # Helper/dev binaries we don't ship. rm -f (not rm): the set drifts on git
   # main, and a removed helper must not fail the build.
   postInstall = ''
-    rm -f $out/bin/scx_arena_selftests $out/bin/vmlinux_docify $out/bin/xtask
+    rm -f $out/bin/scx_arena_selftests $out/bin/vmlinux_docify $out/bin/xtask $out/bin/scx_forge_agent
   '';
 
   __structuredAttrs = true;
