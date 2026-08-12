@@ -98,7 +98,4 @@ All scheduler work is by the [sched-ext](https://github.com/sched-ext) project a
 Packaging is MIT (see [LICENSE](./LICENSE)); the schedulers themselves are GPL-2.0, upstream.
 
 <!-- BEGIN generated:footer -->
----
-
-*Maintained as part of the [Daaboulex](https://github.com/Daaboulex) NixOS ecosystem.*
 <!-- END generated:footer -->
