@@ -11,7 +11,7 @@
   libseccomp,
   openssl,
 }:
-rustPlatform.buildRustPackage (finalAttrs: {
+rustPlatform.buildRustPackage (_finalAttrs: {
   pname = "scx-git";
   # Auto-updated by scripts/update.sh (versionScheme: unstable-date).
   version = "1.1.1-unstable-2026-08-10";
