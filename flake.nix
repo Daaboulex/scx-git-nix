@@ -25,7 +25,19 @@
 
       imports = [ inputs.std.flakeModules.base ];
 
-      flake.overlays.default = import ./overlay.nix;
+      flake.overlays =
+        let
+          glueOverlay = import ./overlay.nix;
+          dir = ./overlays;
+          names = if builtins.pathExists dir then builtins.attrNames (builtins.readDir dir) else [ ];
+          fixOverlays = map (n: (import (dir + "/${n}")).overlay) (
+            builtins.filter (n: inputs.nixpkgs.lib.hasSuffix ".nix" n) names
+          );
+        in
+        {
+          default = inputs.nixpkgs.lib.composeManyExtensions ([ glueOverlay ] ++ fixOverlays);
+          probe = glueOverlay;
+        };
       flake.nixosModules.default = import ./module.nix;
 
       perSystem =
