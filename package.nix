@@ -14,13 +14,13 @@
 rustPlatform.buildRustPackage (_finalAttrs: {
   pname = "scx-git";
   # Auto-updated by scripts/update.sh (versionScheme: unstable-date).
-  version = "1.1.4-unstable-2026-10-31";
+  version = "1.1.4-unstable-2026-11-02";
 
   src = fetchFromGitHub {
     owner = "sched-ext";
     repo = "scx";
-    rev = "a40cb6115e687a0838c0ccce9b5210b356124f83";
-    hash = "sha256-KNg43hZ52NIvL3BZnns+ceFEnYfYyzs89wYXrE3ZSF4=";
+    rev = "b19726e95a8ec01af5f0661fb1821e750125f058";
+    hash = "sha256-isKqDetAUXVtD64q1dBzJgzvXQXpyP9Abq8yGzRY9vM=";
   };
 
   # Regenerated on every bump by the updater (build-extract). The Cargo.lock
