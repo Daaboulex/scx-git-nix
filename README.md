@@ -28,7 +28,7 @@ A Nix flake that packages the **Rust userspace schedulers** from `sched-ext/scx`
 - `scx-git` — the git-main Rust schedulers (`scx_rusty`, `scx_lavd`, `scx_layered`, `scx_bpfland`, `scx_flash`, `scx_rustland`, …).
 - `scx-git-full` *(default)* — `scx-git` plus nixpkgs' C example schedulers, the git analogue of `pkgs.scx.full`. No gaps in the available scheduler set.
 - An overlay exposing `pkgs.scx-git` / `pkgs.scx-git-full`.
-- A NixOS module that points `services.scx` at the git schedulers.
+- A NixOS module that points `services.scx-loader` at the git schedulers.
 
 ## Requirements
 
@@ -48,10 +48,10 @@ Add the flake and apply the overlay + module:
   imports = [ inputs.scx-git.nixosModules.default ];
   nixpkgs.overlays = [ inputs.scx-git.overlays.default ];
 
-  scx-git.enable = true;        # point services.scx at the git schedulers
-  services.scx = {
+  scx-git.enable = true;        # point services.scx-loader at the git schedulers
+  services.scx-loader = {
     enable = true;
-    scheduler = "scx_rusty";    # or scx_lavd, scx_layered, scx_bpfland, …
+    config.default_sched = "scx_rusty";    # or scx_lavd, scx_bpfland, …
   };
 }
 ```

@@ -60,8 +60,8 @@
             module = ./module.nix;
             config = {
               scx-git.enable = true;
-              services.scx.enable = true;
-              services.scx.scheduler = "scx_rusty";
+              services.scx-loader.enable = true;
+              services.scx-loader.config.default_sched = "scx_rusty";
             };
           };
         };
