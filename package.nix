@@ -7,7 +7,6 @@
   zlib,
   zstd,
   fetchFromGitHub,
-  fetchpatch,
   protobuf,
   libseccomp,
   openssl,
@@ -60,20 +59,14 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   prePatch = ''
     libbpf=$(echo "$cargoDepsCopy"/source-registry-*/libbpf-sys-*/libbpf)
     if [ ! -f "$libbpf/include/linux/types.h" ]; then
-      echo "scx-git: no vendored libbpf-sys found under $cargoDepsCopy; drop the libbpf-linux-types-u128 prePatch from package.nix" >&2
+      echo "scx-git: no vendored libbpf-sys found under $cargoDepsCopy; drop the prePatch and libbpf-linux-types-u128.patch" >&2
       exit 1
     fi
     if grep -q '__u128' "$libbpf/include/linux/types.h"; then
-      echo "scx-git: the vendored libbpf already defines __u128 (libbpf f90a9c487 reached libbpf-sys); drop the libbpf-linux-types-u128 prePatch from package.nix" >&2
+      echo "scx-git: the vendored libbpf already defines __u128 (libbpf f90a9c487 reached libbpf-sys); drop the prePatch and libbpf-linux-types-u128.patch" >&2
       exit 1
     fi
-    patch -p1 -d "$libbpf" < ${
-      fetchpatch {
-        name = "libbpf-linux-types-u128.patch";
-        url = "https://github.com/libbpf/libbpf/commit/f90a9c487d7542d91fa584b83b6a624a4fbeb341.patch";
-        hash = "sha256-dAJqJ4Yf17ZbC4ZzkX9gUaQuhygjDphm0T5KJdCKn34=";
-      }
-    }
+    patch -p1 -d "$libbpf" < ${./libbpf-linux-types-u128.patch}
   '';
 
   # Most tests read live CPU-topology info, which the sandbox lacks.
