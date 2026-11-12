@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 <!-- END generated:badges -->
 
-Bleeding-edge [sched-ext](https://github.com/sched-ext/scx) schedulers built from the tip of `main` and packaged for NixOS. Always the latest `scx_lavd`, `scx_rusty`, `scx_layered`, `scx_flash`, `scx_bpfland` and friends.
+[sched-ext](https://github.com/sched-ext/scx) schedulers built from `main` and packaged for NixOS, among them `scx_lavd`, `scx_rusty`, `scx_layered`, `scx_flash` and `scx_bpfland`.
 
 <!-- BEGIN generated:upstream -->
 ## Upstream
@@ -95,7 +95,7 @@ All scheduler work is by the [sched-ext](https://github.com/sched-ext) project a
 
 ## License
 
-Packaging is MIT (see [LICENSE](./LICENSE)); the schedulers themselves are GPL-2.0, upstream.
+Packaging is MIT (see [LICENSE](./LICENSE)); the schedulers themselves are GPL-2.0, upstream. `scx-git` declares `meta.license` GPL-2.0-only and `scx-git-full` declares no `meta.license`.
 
 <!-- BEGIN generated:footer -->
 <!-- END generated:footer -->
