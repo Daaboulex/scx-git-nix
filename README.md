@@ -1,101 +1,121 @@
-# scx-git-nix
+# sched-ext schedulers from git main (Nix)
 
-<!-- BEGIN generated:badges -->
-[![CI](https://github.com/Daaboulex/scx-git-nix/actions/workflows/ci.yml/badge.svg)](https://github.com/Daaboulex/scx-git-nix/actions/workflows/ci.yml)
-[![NixOS unstable](https://img.shields.io/badge/NixOS-unstable-78C0E8?logo=nixos&logoColor=white)](https://nixos.org)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-<!-- END generated:badges -->
+The [sched-ext](https://github.com/sched-ext/scx) schedulers, built from
+upstream's `main` branch and packaged for NixOS. It is for a NixOS system that
+should run schedulers such as `scx_lavd`, `scx_rusty`, `scx_layered`,
+`scx_flash` and `scx_bpfland` at upstream's latest commit.
 
-[sched-ext](https://github.com/sched-ext/scx) schedulers built from `main` and packaged for NixOS, among them `scx_lavd`, `scx_rusty`, `scx_layered`, `scx_flash` and `scx_bpfland`.
+All scheduler work is by the [sched-ext](https://github.com/sched-ext) project
+and its contributors. This repository only packages it for Nix.
 
-<!-- BEGIN generated:upstream -->
-## Upstream
+## Does it work
 
-| | |
-|---|---|
-| **Project** | [sched-ext/scx](https://github.com/sched-ext/scx) |
-| **License** | GPL-2.0 |
-| **Tracked** | Git commits (main branch) |
+The flake builds from source for `x86_64-linux` and `aarch64-linux`, and it
+follows nixpkgs `nixos-unstable`. Upstream scx is architecture-portable.
 
-<!-- END generated:upstream -->
+A scheduler only runs on a Linux kernel 6.12 or newer with `sched_ext` enabled.
+A recent CachyOS kernel is one, and so is
+`boot.kernelPackages = pkgs.linuxPackages_latest`. The package itself builds on
+any kernel.
 
-## What Is This?
+Untested: upstream's own tests are switched off in the build. The checks here
+build the packages and evaluate the module, and none of them starts a scheduler
+on a running kernel.
 
-A Nix flake that packages the **Rust userspace schedulers** from `sched-ext/scx` at the latest commit, rebuilt automatically as upstream advances. The C *example* schedulers (a separate, rarely-changing `scx-c-examples` repo, not recommended for end users) are pulled in from nixpkgs so the full scheduler set is available with a single git pin.
+## What you get
 
-## What's Included
+- `scx-git` holds the Rust schedulers from git main, among them `scx_rusty`,
+  `scx_lavd`, `scx_layered`, `scx_bpfland`, `scx_flash` and `scx_rustland`.
+- `scx-git-full` is the default package. It is `scx-git` plus the C example
+  schedulers from nixpkgs, the git analogue of `pkgs.scx.full`.
+- An overlay adds both as `pkgs.scx-git` and `pkgs.scx-git-full`.
+- A NixOS module points `services.scx-loader` at the git schedulers.
 
-- `scx-git` — the git-main Rust schedulers (`scx_rusty`, `scx_lavd`, `scx_layered`, `scx_bpfland`, `scx_flash`, `scx_rustland`, …).
-- `scx-git-full` *(default)* — `scx-git` plus nixpkgs' C example schedulers, the git analogue of `pkgs.scx.full`. No gaps in the available scheduler set.
-- An overlay exposing `pkgs.scx-git` / `pkgs.scx-git-full`.
-- A NixOS module that points `services.scx-loader` at the git schedulers.
+## Install
 
-## Requirements
-
-- A Linux kernel **6.12 or newer** with `sched_ext` enabled (e.g. recent CachyOS, or `boot.kernelPackages = pkgs.linuxPackages_latest`). The package builds on any kernel; the schedulers only *run* on a sched_ext kernel.
-- `x86_64-linux` and `aarch64-linux` (built from source; upstream scx is architecture-portable).
-
-<!-- BEGIN generated:installation -->
-## Installation
-
-Add the flake and apply the overlay + module:
+Add the flake:
 
 ```nix
 {
   inputs.scx-git.url = "github:Daaboulex/scx-git-nix";
+}
+```
 
-  # in your NixOS configuration:
+Then import the module, apply the overlay and switch it on:
+
+```nix
+{
   imports = [ inputs.scx-git.nixosModules.default ];
   nixpkgs.overlays = [ inputs.scx-git.overlays.default ];
 
-  scx-git.enable = true;        # point services.scx-loader at the git schedulers
+  scx-git.enable = true;
   services.scx-loader = {
     enable = true;
-    config.default_sched = "scx_rusty";    # or scx_lavd, scx_bpfland, …
+    config.default_sched = "scx_rusty";
   };
 }
 ```
 
-<!-- END generated:installation -->
+`scx-git.enable` only swaps the schedulers that `services.scx-loader` runs. You
+still enable the loader yourself and name the scheduler in
+`config.default_sched`, for example `scx_rusty`, `scx_lavd` or `scx_bpfland`.
+The overlay is required, because the module takes the packages from `pkgs`.
 
-## Usage
+## Options you are likely to set
 
-### Run a scheduler ad-hoc
+| Option | What it is for |
+|---|---|
+| `scx-git.enable` | Point `services.scx-loader` at the git schedulers |
+| `scx-git.full` | On by default. Set it to `false` for the Rust schedulers only |
 
-Schedulers must run as root on a `sched_ext` kernel (6.12+):
+Every option, with its type and default: [docs/OPTIONS.md](docs/OPTIONS.md).
+
+## Without the module
+
+To try a scheduler without installing anything, build the package and run one
+binary. A scheduler must run as root on a `sched_ext` kernel.
 
 ```bash
 nix build github:Daaboulex/scx-git-nix#scx-git
-sudo ./result/bin/scx_rusty        # or scx_lavd, scx_layered, scx_bpfland, …
+sudo ./result/bin/scx_rusty
 ```
 
-### As a package
+To install the schedulers as a plain package:
 
 ```nix
 environment.systemPackages = [ inputs.scx-git.packages.${system}.scx-git-full ];
 ```
 
-`scx-git.full = false;` selects the Rust schedulers only.
-
 ## Updates
 
-A scheduled GitHub Action tracks `sched-ext/scx` main, bumps the pinned commit, regenerates the source and Cargo hashes, builds, and only lands the change if it passes. Failures open an issue instead of merging.
+A scheduled GitHub Action follows `sched-ext/scx` main and moves the pinned
+commit. The change lands only if it builds. A failure opens an issue instead.
 
-## Development
+## Known limits
 
-```bash
-nix develop          # lint/format shell
-nix flake check      # build every scheduler + the module-eval check
-nix build .#scx-git  # the Rust schedulers
-```
+- The package builds on any kernel, but the schedulers only run on a
+  `sched_ext` kernel.
+- The set of schedulers is whatever upstream's main builds at the pinned
+  commit. Upstream adds and removes schedulers, and the build does not hold the
+  set fixed.
+- The scheduler names the package declares are a list kept by hand. The build
+  does not compare it with the binaries it produced.
+- The C example schedulers in `scx-git-full` come from nixpkgs, not from git
+  main, and are not recommended for end users.
+- The module forces `services.scx-loader.schedsPackages`, so a plain setting of
+  that option elsewhere in your configuration is ignored.
+- Four helper binaries are removed from the package: `scx_arena_selftests`,
+  `vmlinux_docify`, `xtask` and `scx_forge_agent`.
 
-## Credits
+## More
 
-All scheduler work is by the [sched-ext](https://github.com/sched-ext) project and contributors. This repo only packages it for Nix.
+- [docs/DESIGN.md](docs/DESIGN.md): why the Rust schedulers come from git and
+  the C examples from nixpkgs, why the scheduler set is not fixed, the two
+  fixes the build carries
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md): building, the checks, how the
+  pinned commit is updated
+- [SECURITY.md](SECURITY.md): how to report a vulnerability
 
 ## License
 
 Packaging is MIT (see [LICENSE](./LICENSE)); the schedulers themselves are GPL-2.0, upstream. `scx-git` declares `meta.license` GPL-2.0-only and `scx-git-full` declares no `meta.license`.
-
-<!-- BEGIN generated:footer -->
-<!-- END generated:footer -->
