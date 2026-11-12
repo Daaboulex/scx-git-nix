@@ -13,7 +13,7 @@
 }:
 rustPlatform.buildRustPackage (_finalAttrs: {
   pname = "scx-git";
-  # Auto-updated by scripts/update.sh (versionScheme: unstable-date).
+  # Auto-updated by the standard's updater (versionScheme: unstable-date).
   version = "1.1.4-unstable-2026-11-12";
 
   src = fetchFromGitHub {
@@ -97,8 +97,8 @@ rustPlatform.buildRustPackage (_finalAttrs: {
     runHook postInstallCheck
   '';
 
-  # Static list for the services.scx `scheduler` enum (a NixOS module reads
-  # cfg.package.schedulers at eval time, so this can't be derived from $out).
+  # Static list of the schedulers this package builds, for a consumer that
+  # needs the names at evaluation, where $out cannot be read.
   # Refreshed against upstream as needed; the build no longer enforces it.
   passthru.schedulers = [
     "scx_bpfland"
