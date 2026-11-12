@@ -10,13 +10,11 @@ Declared in [module.nix](../module.nix).
 
 Whether to enable git-latest sched-ext schedulers for the services.scx-loader daemon.
 
-- Type: boolean
-- Default: `false`
+Type: `boolean`. Default: `false`.
 
 ### `scx-git.full`
 
 Use the complete scheduler set (git-main Rust schedulers plus nixpkgs'
 C example schedulers). Set to false for the Rust schedulers only.
 
-- Type: boolean
-- Default: `true`
+Type: `boolean`. Default: `true`.
