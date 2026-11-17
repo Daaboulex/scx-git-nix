@@ -90,23 +90,3 @@ without it.
 [flake.nix](../flake.nix) composes `overlays.default` from
 [overlay.nix](../overlay.nix) and every `.nix` file under `overlays/`.
 `overlays.probe` is [overlay.nix](../overlay.nix) alone, without the fixes.
-
-### `__u128` in the vendored libbpf
-
-The `prePatch` in [package.nix](../package.nix) applies
-[libbpf-linux-types-u128.patch](../libbpf-linux-types-u128.patch) to the libbpf
-that the `libbpf-sys` crate vendors. The patch adds the `__s128` and `__u128`
-types to that libbpf's `include/linux/types.h`.
-
-The reason is in commit `ef15c14` of this repository. The kernel headers in
-nixpkgs moved to 7.3, whose arm64 `asm/sigcontext.h` uses `__u128`. scx bundles
-`libbpf-sys` 1.7.0, whose own `include/linux/types.h` shadows the system one
-without that type, so the build failed on aarch64.
-
-libbpf added the type in its commit `f90a9c487`. The patch is a file in this
-repository, not a fetch from GitHub, because GitHub rate-limits commit patch
-URLs and builds failed with HTTP 429 (commit `a348e39`).
-
-The build stops with a removal instruction in two cases: when it finds no
-vendored `libbpf-sys`, and when the vendored libbpf already defines `__u128`.
-The patch therefore cannot stay in place after it stopped being needed.

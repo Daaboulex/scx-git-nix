@@ -14,18 +14,18 @@
 rustPlatform.buildRustPackage (_finalAttrs: {
   pname = "scx-git";
   # Auto-updated by the standard's updater (versionScheme: unstable-date).
-  version = "1.1.4-unstable-2026-11-16";
+  version = "1.1.4-unstable-2026-11-17";
 
   src = fetchFromGitHub {
     owner = "sched-ext";
     repo = "scx";
-    rev = "48e2a9cbd36b29a2a52689112fb613bae9723b8f";
-    hash = "sha256-WCwQh4lT4iUDqi68qX4wpPhQ5d6oikvKVIHznczx0wM=";
+    rev = "3d853e8fcef76de5c3452460ed04743870103e5c";
+    hash = "sha256-R6vluSWzmui21PAWVNpjlRiFenn4R+rIR9FDnswGoig=";
   };
 
   # Regenerated on every bump by the updater (build-extract). The Cargo.lock
   # of git main moves, so this is not stable across revisions.
-  cargoHash = "sha256-l/Sx1/iM7zSRZX3dOK+Nnq0bCi+KWzagv4JAc/xV9W4=";
+  cargoHash = "sha256-XpJ/Nflk8mxgfQx6SwrnQL5WUvThz0TWGaslIEhJ5XI=";
 
   nativeBuildInputs = [
     pkg-config
@@ -55,19 +55,6 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   hardeningDisable = [
     "zerocallusedregs"
   ];
-
-  prePatch = ''
-    libbpf=$(echo "$cargoDepsCopy"/source-registry-*/libbpf-sys-*/libbpf)
-    if [ ! -f "$libbpf/include/linux/types.h" ]; then
-      echo "scx-git: no vendored libbpf-sys found under $cargoDepsCopy; drop the prePatch and libbpf-linux-types-u128.patch" >&2
-      exit 1
-    fi
-    if grep -q '__u128' "$libbpf/include/linux/types.h"; then
-      echo "scx-git: the vendored libbpf already defines __u128 (libbpf f90a9c487 reached libbpf-sys); drop the prePatch and libbpf-linux-types-u128.patch" >&2
-      exit 1
-    fi
-    patch -p1 -d "$libbpf" < ${./libbpf-linux-types-u128.patch}
-  '';
 
   # Most tests read live CPU-topology info, which the sandbox lacks.
   doCheck = false;
