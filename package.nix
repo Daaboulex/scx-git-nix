@@ -19,8 +19,8 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   src = fetchFromGitHub {
     owner = "sched-ext";
     repo = "scx";
-    rev = "3d853e8fcef76de5c3452460ed04743870103e5c";
-    hash = "sha256-R6vluSWzmui21PAWVNpjlRiFenn4R+rIR9FDnswGoig=";
+    rev = "fec84182c7d8d4a40a70980f1dfb9e0029e45022";
+    hash = "sha256-hpQzqHJkN5Y3pjuxStb/dsiPfAS6H7LsAFUJn69lIL4=";
   };
 
   # Regenerated on every bump by the updater (build-extract). The Cargo.lock
