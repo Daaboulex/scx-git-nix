@@ -14,18 +14,18 @@
 rustPlatform.buildRustPackage (_finalAttrs: {
   pname = "scx-git";
   # Auto-updated by the standard's updater (versionScheme: unstable-date).
-  version = "1.1.4-unstable-2026-11-17";
+  version = "1.1.4-unstable-2026-11-18";
 
   src = fetchFromGitHub {
     owner = "sched-ext";
     repo = "scx";
-    rev = "fec84182c7d8d4a40a70980f1dfb9e0029e45022";
-    hash = "sha256-hpQzqHJkN5Y3pjuxStb/dsiPfAS6H7LsAFUJn69lIL4=";
+    rev = "886f35d0c48d226a27655cb85c92e3a97155af13";
+    hash = "sha256-6ql/vIe0DKpdNXA/W43/3M7AYGUeJCGgaWLZfETgQvU=";
   };
 
   # Regenerated on every bump by the updater (build-extract). The Cargo.lock
   # of git main moves, so this is not stable across revisions.
-  cargoHash = "sha256-XpJ/Nflk8mxgfQx6SwrnQL5WUvThz0TWGaslIEhJ5XI=";
+  cargoHash = "sha256-wdyBJtzFGjwkX1Y4fTaw6NjbMU7wkOnWWxaACpj56qA=";
 
   nativeBuildInputs = [
     pkg-config
