@@ -74,7 +74,7 @@ be removed.
 
 ### clang 22 for the BPF schedulers
 
-[overlays/bpf-clang-22.nix](../overlays/bpf-clang-22.nix) was added on
+The temporary fix `bpf-clang-22` was added on
 2026-09-29. It overrides `scx-git` to take `llvmPackages_22`, so the
 `BPF_CLANG` the build hands to upstream's `build.rs` is clang 22.
 
