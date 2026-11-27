@@ -34,15 +34,26 @@ stay with `services.scx-loader.enable` and
 The module reads both packages from `pkgs`. That is why the overlay of this
 flake has to be applied next to it.
 
-## The scheduler set is not asserted
+## The scheduler names come from upstream's workspace
 
-Git main adds and removes schedulers continuously. nixpkgs asserts an exact
-scheduler set, which is correct for a pinned release, but here it would break
-the package on every upstream scheduler change.
+nixpkgs' `services.scx-loader` reads `passthru.schedulers` while it evaluates
+and refuses a `default_sched` that is not in it. Git main adds and removes
+schedulers continuously, so [package.nix](../package.nix) reads the names from
+upstream's Cargo workspace at the pinned commit instead of keeping a list: each
+workspace member under `scheds/`, named by its `[[bin]]` or its package.
 
-The install check in [package.nix](../package.nix) is a sanity check only. It
-fails when the build produced fewer than five `scx_*` binaries, and otherwise
-prints the ones it found.
+The workspace is fetched with `builtins.fetchTree` by `rev` alone. It lands at
+the same store path as the build's `src`, so the source is fetched once. It is
+not checked against `hash`: the updater replaces `hash` with a dummy while it
+recomputes it, and a tree checked against the dummy fails the evaluation the
+updater needs.
+
+## The install check
+
+The install check fails when the build produced fewer than five `scx_*`
+binaries. It then compares `$out/bin` with every binary the workspace declares,
+less the helpers, and names each one missing or undeclared. An upstream
+scheduler added or dropped needs no edit here.
 
 It then starts every installed binary with `--version`, or with `--help` for a
 tool that has no `--version`, and fails when one exits non-zero on both. That
@@ -53,20 +64,11 @@ The build sandbox has no `/sys`. Some schedulers read the CPU topology while
 they parse their arguments and panic without it, so the check points upstream's
 `SCX_SYSFS_PREFIX` at a one-CPU topology it writes itself.
 
-## The scheduler name list is static
-
-`passthru.schedulers` in [package.nix](../package.nix) is a list written by
-hand. A NixOS module reads it at evaluation time, so it cannot be derived from
-the build output.
-
-The list is refreshed against upstream as needed. The build does not enforce
-it.
-
 ## Helper binaries are removed
 
-The build deletes `scx_arena_selftests`, `vmlinux_docify` and `xtask` from the
-output. They are helper and development binaries that the package does not
-ship.
+The build deletes the binaries named in `helpers` in
+[package.nix](../package.nix). They are helper, selftest and development
+binaries that the package does not ship.
 
 They are removed with `rm`, so a helper that upstream renames or drops fails
 the build instead of shipping unnoticed.

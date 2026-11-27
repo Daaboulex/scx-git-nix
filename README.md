@@ -2,8 +2,7 @@
 
 The [sched-ext](https://github.com/sched-ext/scx) schedulers, built from
 upstream's `main` branch and packaged for NixOS. It is for a NixOS system that
-should run schedulers such as `scx_lavd`, `scx_rusty`, `scx_layered`,
-`scx_flash` and `scx_bpfland` at upstream's latest commit.
+should run the schedulers at upstream's latest commit.
 
 All scheduler work is by the [sched-ext](https://github.com/sched-ext) project
 and its contributors. This repository only packages it for Nix.
@@ -24,8 +23,8 @@ and evaluate the module. None of them starts a scheduler on a running kernel.
 
 ## What you get
 
-- `scx-git` holds the Rust schedulers from git main, among them `scx_rusty`,
-  `scx_lavd`, `scx_layered`, `scx_bpfland`, `scx_flash` and `scx_rustland`.
+- `scx-git` holds every scheduler and tool upstream's `main` builds. Its
+  `passthru.schedulers` names the schedulers.
 - `scx-git-full` is the default package. It is `scx-git` plus the C example
   schedulers from nixpkgs, the git analogue of `pkgs.scx.full`.
 - An overlay adds both as `pkgs.scx-git` and `pkgs.scx-git-full`.
@@ -58,7 +57,8 @@ Then import the module, apply the overlay and switch it on:
 
 `scx-git.enable` only swaps the schedulers that `services.scx-loader` runs. You
 still enable the loader yourself and name the scheduler in
-`config.default_sched`, for example `scx_rusty`, `scx_lavd` or `scx_bpfland`.
+`config.default_sched`. nixpkgs refuses, at evaluation, a name the package
+does not build.
 The overlay is required, because the module takes the packages from `pkgs`.
 
 ## Options you are likely to set
@@ -98,14 +98,14 @@ commit. The change lands only if it builds. A failure opens an issue instead.
 - The set of schedulers is whatever upstream's main builds at the pinned
   commit. Upstream adds and removes schedulers, and the build does not hold the
   set fixed.
-- The scheduler names the package declares are a list kept by hand. The build
-  does not compare it with the binaries it produced.
+- The scheduler names are read from upstream's Cargo workspace while Nix
+  evaluates, so evaluating them downloads upstream's source at the pinned
+  commit.
 - The C example schedulers in `scx-git-full` come from nixpkgs, not from git
   main, and are not recommended for end users.
 - The module forces `services.scx-loader.schedsPackages`, so a plain setting of
   that option elsewhere in your configuration is ignored.
-- Three helper binaries are removed from the package: `scx_arena_selftests`,
-  `vmlinux_docify` and `xtask`.
+- Upstream's helper and selftest binaries are removed from the package.
 
 ## More
 

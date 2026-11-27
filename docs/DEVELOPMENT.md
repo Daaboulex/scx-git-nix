@@ -23,8 +23,9 @@ once per clone.
 `services.scx-loader.config.default_sched = "scx_rusty"`.
 
 The package has an install check of its own. It fails when the build produced
-fewer than five `scx_*` binaries, or when an installed binary exits non-zero on
-both `--version` and `--help`.
+fewer than five `scx_*` binaries, when the installed binaries differ from the
+ones upstream's Cargo workspace declares, or when an installed binary exits
+non-zero on both `--version` and `--help`.
 
 Upstream's tests are not run. [DESIGN.md](DESIGN.md) says why.
 
