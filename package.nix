@@ -59,18 +59,15 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   # Most tests read live CPU-topology info, which the sandbox lacks.
   doCheck = false;
 
-  # Helper/dev binaries we don't ship. rm -f (not rm): the set drifts on git
-  # main, and a removed helper must not fail the build.
   postInstall = ''
-    rm -f $out/bin/scx_arena_selftests $out/bin/vmlinux_docify $out/bin/xtask $out/bin/scx_forge_agent
+    rm $out/bin/scx_arena_selftests $out/bin/vmlinux_docify $out/bin/xtask
   '';
 
   __structuredAttrs = true;
 
   # git main adds/removes schedulers continuously, so do NOT assert an exact
   # scheduler set (nixpkgs does — correct for a pinned release, but it would
-  # break this package on every upstream scheduler change). Sanity-check only
-  # that the workspace actually produced a reasonable number of schedulers.
+  # break this package on every upstream scheduler change).
   doInstallCheck = true;
   installCheckPhase = ''
     runHook preInstallCheck
@@ -81,6 +78,17 @@ rustPlatform.buildRustPackage (_finalAttrs: {
       exit 1
     fi
     echo "Built ''${#found[@]} schedulers: ''${found[*]}"
+    export SCX_SYSFS_PREFIX=$TMPDIR/one-cpu-sysfs
+    cpus=$SCX_SYSFS_PREFIX/sys/devices/system/cpu
+    mkdir -p $cpus/cpu0/topology
+    echo 0 > $cpus/online
+    for id in core_id physical_package_id cluster_id; do echo 0 > $cpus/cpu0/topology/$id; done
+    for b in *; do
+      ./$b --version > /dev/null || ./$b --help > /dev/null || {
+        echo "$b exits non-zero on both --version and --help, run in a sandbox with no /sys and the one-CPU topology under $SCX_SYSFS_PREFIX"
+        exit 1
+      }
+    done
     runHook postInstallCheck
   '';
 

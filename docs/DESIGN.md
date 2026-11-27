@@ -44,6 +44,15 @@ The install check in [package.nix](../package.nix) is a sanity check only. It
 fails when the build produced fewer than five `scx_*` binaries, and otherwise
 prints the ones it found.
 
+It then starts every installed binary with `--version`, or with `--help` for a
+tool that has no `--version`, and fails when one exits non-zero on both. That
+shows each binary loads its libraries and parses its command line. It does not
+load a BPF program or start a scheduler.
+
+The build sandbox has no `/sys`. Some schedulers read the CPU topology while
+they parse their arguments and panic without it, so the check points upstream's
+`SCX_SYSFS_PREFIX` at a one-CPU topology it writes itself.
+
 ## The scheduler name list is static
 
 `passthru.schedulers` in [package.nix](../package.nix) is a list written by
@@ -55,12 +64,12 @@ it.
 
 ## Helper binaries are removed
 
-The build deletes `scx_arena_selftests`, `vmlinux_docify`, `xtask` and
-`scx_forge_agent` from the output. They are helper and development binaries
-that the package does not ship.
+The build deletes `scx_arena_selftests`, `vmlinux_docify` and `xtask` from the
+output. They are helper and development binaries that the package does not
+ship.
 
-They are removed with `rm -f`. The set drifts on git main, and a helper that
-upstream dropped must not fail the build.
+They are removed with `rm`, so a helper that upstream renames or drops fails
+the build instead of shipping unnoticed.
 
 ## Tests are off
 

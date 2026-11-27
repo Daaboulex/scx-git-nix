@@ -19,8 +19,8 @@ A recent CachyOS kernel is one, and so is
 any kernel.
 
 Untested: upstream's own tests are switched off in the build. The checks here
-build the packages and evaluate the module, and none of them starts a scheduler
-on a running kernel.
+build the packages, start every installed binary with `--version` or `--help`
+and evaluate the module. None of them starts a scheduler on a running kernel.
 
 ## What you get
 
@@ -104,8 +104,8 @@ commit. The change lands only if it builds. A failure opens an issue instead.
   main, and are not recommended for end users.
 - The module forces `services.scx-loader.schedsPackages`, so a plain setting of
   that option elsewhere in your configuration is ignored.
-- Four helper binaries are removed from the package: `scx_arena_selftests`,
-  `vmlinux_docify`, `xtask` and `scx_forge_agent`.
+- Three helper binaries are removed from the package: `scx_arena_selftests`,
+  `vmlinux_docify` and `xtask`.
 
 ## More
 
